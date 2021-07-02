@@ -39,15 +39,25 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 showToast("notification clicked");
                 runNotification();
-//                Intent fullScreenIntent = new Intent(this, MainActivity.class);
-//                PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(this, 0,
-//                        fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, 0)
-//                        .setContentTitle("My notification")
-//                        .setContentText("Hello World!")
-//                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-//                        .setFullScreenIntent(fullScreenPendingIntent, true);
+                final Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        runNotification();
+                    }
+                }, 5000);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        runNotification();
+                    }
+                }, 10000);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        runNotification();
+                    }
+                }, 150000);
 
             }
         });
@@ -62,52 +72,45 @@ public class MainActivity extends AppCompatActivity {
 
     public void runNotification(){
         showToast("runNotification");
-        final Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //Do something after 100ms
-                // send notification to NotificationManager
-                showToast("runNotification >> inside timer");
-                Intent fullScreenIntent = new Intent(getApplicationContext(), MainActivity.class);
-                PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
-                     fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        //Do something after 100ms
+        // send notification to NotificationManager
+        showToast("runNotification >> inside timer");
+        Intent fullScreenIntent = new Intent(getApplicationContext(), MainActivity.class);
+        PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
+                fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                Notification.Builder notificationBuilder =new Notification.Builder(getApplicationContext());
-                notificationBuilder.setSmallIcon(R.drawable.ic_launcher_foreground)
-                        .setContentTitle("title")
-                        .setContentText("content")
+        Notification.Builder notificationBuilder =new Notification.Builder(getApplicationContext());
+        notificationBuilder.setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("title")
+                .setContentText("content")
 //                .setContentIntent(contentIntent)
-                        .setAutoCancel(true)
-                        .setDefaults(Notification.DEFAULT_ALL)
-                        .setPriority(Notification.PRIORITY_HIGH)
-                        .setCategory(Notification.CATEGORY_MESSAGE)
-                        .setFullScreenIntent(fullScreenPendingIntent, true);
+                .setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setCategory(Notification.CATEGORY_MESSAGE)
+                .setFullScreenIntent(fullScreenPendingIntent, true);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-                    notificationBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
-                    showToast("runNotification >> insider timer >> version check");
-                }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            notificationBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+            showToast("runNotification >> insider timer >> version check");
+        }
 
-                NotificationManager notificationManager =
-                        (NotificationManager)getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager =
+                (NotificationManager)getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                {
-                    String channelId = "Your_channel_id";
-                    NotificationChannel channel = new NotificationChannel(
-                            channelId,
-                            "Channel human readable title",
-                            NotificationManager.IMPORTANCE_HIGH);
-                    notificationManager.createNotificationChannel(channel);
-                    notificationBuilder.setChannelId(channelId);
-                }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            String channelId = "Your_channel_id";
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    "Channel human readable title",
+                    NotificationManager.IMPORTANCE_HIGH);
+            notificationManager.createNotificationChannel(channel);
+            notificationBuilder.setChannelId(channelId);
+        }
 
 
-                notificationManager.notify(0, notificationBuilder.build());
-            }
-        }, 5000);
-
+        notificationManager.notify(0, notificationBuilder.build());
 
     }
 
