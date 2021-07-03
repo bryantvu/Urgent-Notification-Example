@@ -24,7 +24,12 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import static android.app.Notification.DEFAULT_SOUND;
+import static android.app.Notification.DEFAULT_VIBRATE;
+
 public class MainActivity extends AppCompatActivity {
+
+    public final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,25 +44,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 showToast("notification clicked");
                 runNotification();
-                final Handler handler = new Handler(Looper.getMainLooper());
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        runNotification();
-                    }
-                }, 5000);
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        runNotification();
-                    }
-                }, 10000);
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        runNotification();
-                    }
-                }, 150000);
+//                final Handler handler = new Handler(Looper.getMainLooper());
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        runNotification();
+//                    }
+//                }, 5000);
 
             }
         });
@@ -85,33 +78,33 @@ public class MainActivity extends AppCompatActivity {
                 .setContentText("content")
 //                .setContentIntent(contentIntent)
                 .setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setCategory(Notification.CATEGORY_MESSAGE)
+                .setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE)
+                .setPriority(Notification.PRIORITY_MAX)
+                .setCategory(Notification.CATEGORY_CALL)
                 .setFullScreenIntent(fullScreenPendingIntent, true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             notificationBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
-            showToast("runNotification >> insider timer >> version check");
         }
 
         NotificationManager notificationManager =
                 (NotificationManager)getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        {
-            String channelId = "Your_channel_id";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.d(TAG, "Android API >> " + Build.VERSION.SDK_INT);
+            String channelId = "1";
             NotificationChannel channel = new NotificationChannel(
                     channelId,
-                    "Channel human readable title",
+                    "Channel TEST",
                     NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription("Channel Description");
+            channel.setShowBadge(true);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             notificationManager.createNotificationChannel(channel);
             notificationBuilder.setChannelId(channelId);
         }
 
-
         notificationManager.notify(0, notificationBuilder.build());
-
     }
 
     @Override
@@ -123,11 +116,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
+        int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
